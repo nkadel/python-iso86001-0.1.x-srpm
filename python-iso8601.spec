@@ -1,86 +1,56 @@
 %{!?upstream_version: %global upstream_version %{version}%{?milestone}}
 
-%global srcname iso8601
+%global pypi_name iso8601
+%global pypi_version 0.1.11
+
 %global sum Simple module to parse ISO 8601 dates
 %global pkgdesc \
 This module parses the most common forms of ISO 8601 date strings \
 (e.g. 2007-01-14T20:34:22+00:00) into datetime objects.
 
-Name:           python-%{srcname}
-Version:        0.1.11
+Name:           python-%{pypi_name}
+Version:        %{pypi_version}
 #Release:        8%%{?dist}
 Release:        0.8%{?dist}
 Summary:        %{sum}
 
 License:        MIT
-URL:            http://pypi.python.org/pypi/%{srcname}/
-Source0:        http://pypi.python.org/packages/source/i/%{srcname}/%{srcname}-%{version}.tar.gz
+URL:            http://pypi.python.org/pypi/%{pypi_name}/
+#Source0:        https://files.pythonhosted.org/packages/source/i/%{pypi_name}/%{pypi_name}-%{pypi_version}.tar.gz
+Source0:        %{pypi_source}
 
 BuildArch:      noarch
 BuildRequires:  python-srpm-macros
 
 %description %{pkgdesc}
 
-%package -n python2-%{srcname}
+%package -n python%{python3_pkgversion}-%{pypi_name}
 Summary:        %{sum}
-%{?python_provide:%python_provide python2-%{srcname}}
-# python_provide does not exist in CBS Cloud buildroot
-Provides:       python-%{srcname} = %{version}-%{release}
-Obsoletes:      python-%{srcname} < 0.1.10-6
-
-BuildRequires:  python2-devel python-setuptools
-
-%description -n python2-%{srcname} %{pkgdesc}
-
-%package -n python%{python3_pkgversion}-%{srcname}
-Summary:        %{sum}
-%{?python_provide:%python_provide python%{python3_pkgversion}-%{srcname}}
+%{?python_provide:%python_provide python%{python3_pkgversion}-%{pypi_name}}
 
 BuildRequires:  python%{python3_pkgversion}-devel
 BuildRequires:  python%{python3_pkgversion}-setuptools
 
-%description -n python%{python3_pkgversion}-%{srcname} %{pkgdesc}
-
-%if 0%{?with_python3_other}
-%package -n python%{python3_other_pkgversion}-%{srcname}
-Summary:        %{sum}
-%{?python_provide:%python_provide python%{python3_other_pkgversion}-%{srcname}}
-BuildRequires:  python%{python3_other_pkgversion}-devel
-BuildRequires:  python%{python3_other_pkgversion}-setuptools
-
-%description -n python%{python3_other_pkgversion}-%{srcname} %{pkgdesc}
-%endif
+%description -n python%{python3_pkgversion}-%{pypi_name} %{pkgdesc}
 
 %prep
-%autosetup -n %{srcname}-%{version}
+%autosetup -n %{pypi_name}-%{version}
 
 %build
-%py2_build
 %py3_build
 %if 0%{?with_python3_other}
 %py3_other_build
 %endif
 
 %install
-%py2_install
 %py3_install
 %if 0%{?with_python3_other}
 %py3_other_install
 %endif
 
-%files -n python2-%{srcname}
-%doc LICENSE README.rst
-%{python2_sitelib}/*
-
-%files -n python%{python3_pkgversion}-%{srcname}
+%files -n python%{python3_pkgversion}-%{pypi_name}
 %doc LICENSE README.rst
 %{python3_sitelib}/*
-
-%if 0%{?with_python3_other}
-%files -n python%{python3_other_pkgversion}-%{srcname}
-%doc LICENSE README.rst
-%{python3_other_sitelib}/*
-%endif
 
 %changelog
 * Fri Mar 08 2019 Troy Dawson <tdawson@redhat.com> - 0.1.11-8
